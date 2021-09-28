@@ -1,22 +1,22 @@
 const socket = io("/");
 
-var peer = new Peer(undefined, {
-    path: "/peerjs",
-    host: "/",
-    port: "443",
-});
-
 const user = prompt("Enter your name");
 
-const myVideo = document.createElement("video");
-myVideo.muted = true;
-
-let myStream;
-
 $(document).ready(function () {
+    var peer = new Peer(undefined, {
+        path: "/peerjs",
+        host: "/",
+        port: "443",
+    });
+
     peer.on("open", (id) => {
         socket.emit("join-room", ROOM_ID, id, user);
     });
+
+    const myVideo = document.createElement("video");
+    myVideo.muted = true;
+
+    let myStream;
 
     navigator.mediaDevices
         .getUserMedia({
@@ -35,23 +35,28 @@ $(document).ready(function () {
                 });
             });
         })
+
+    function connectToNewUser(userId, stream) {
+        const call = peer.call(userId, stream);
+        const video = document.createElement("video");
+        call.on("stream", (userVideoStream) => {
+            addVideoStream(video, userVideoStream);
+        });
+    };
+
+    function addVideoStream(video, stream) {
+        video.srcObject = stream;
+        video.addEventListener("loadedmetadata", () => {
+            video.play();
+            $("#video_grid").append(video)
+        });
+    };
+
+    socket.on("user-connected", (userId) => {
+        connectToNewUser(userId, myStream);
+    });
+
 })
-
-function connectToNewUser(userId, stream) {
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-        addVideoStream(video, userVideoStream);
-    });
-};
-
-function addVideoStream(video, stream) {
-    video.srcObject = stream;
-    video.addEventListener("loadedmetadata", () => {
-        video.play();
-        $("#video_grid").append(video)
-    });
-};
 
 $(function () {
     $("#show_chat").click(function () {
@@ -130,10 +135,6 @@ $(function () {
         })
     })
 })
-
-socket.on("user-connected", (userId) => {
-    connectToNewUser(userId, myStream);
-});
 
 socket.on("createMessage", (message, userName) => {
     $(".messages").append(`
