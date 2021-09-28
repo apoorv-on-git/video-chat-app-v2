@@ -27,16 +27,16 @@ navigator.mediaDevices
         addVideoStream(myVideo, stream);
     })
     .then(() => {
-        socket.on("user-connected", (userId) => {
-            connectToNewUser(userId, myStream)
-        });
-
         peer.on("call", (call) => {
             call.answer(myStream);
             const video = document.createElement("video");
             call.on("stream", (userVideoStream) => {
                 addVideoStream(video, userVideoStream);
             });
+        });
+
+        socket.on("user-connected", (userId) => {
+            connectToNewUser(userId, myStream)
         });
     })
 
