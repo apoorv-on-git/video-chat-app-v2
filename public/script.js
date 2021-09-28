@@ -32,25 +32,19 @@ $(document).ready(function () {
             });
 
             peer.on("call", (call) => {
-                console.log("call answer")
                 call.answer(stream);
-                console.log("call answer > const video")
                 const video = document.createElement("video");
                 call.on("stream", (userVideoStream) => {
-                    console.log("call stream > call answer")
                     addVideoStream(video, userVideoStream);
                 });
+                socket.emit("ready")
             });
         })
 
     function connectToNewUser(userId, stream) {
-        console.log("const call > connectToNewUser")
         const call = peer.call(userId, stream);
-        console.log("const video > connectToNewUser")
         const video = document.createElement("video");
-        console.log("call.on() > connectToNewUser")
         call.on("stream", (userVideoStream) => {
-            console.log("call stream > connectToNewUser")
             addVideoStream(video, userVideoStream);
         });
     };
