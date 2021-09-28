@@ -28,7 +28,7 @@ $(document).ready(function () {
             addVideoStream(myVideo, stream);
 
             socket.on("user-connected", (userId) => {
-                console.log("connectToNewUser!")
+                setTimeout(function () { }, 1000)
                 connectToNewUser(userId, myStream);
             });
 
