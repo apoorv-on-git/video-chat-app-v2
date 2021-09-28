@@ -28,7 +28,8 @@ $(document).ready(function () {
             addVideoStream(myVideo, stream);
 
             socket.on("user-connected", (userId) => {
-                setTimeout(connectToNewUser(userId, stream), 1000)
+                console.log("client", "ready")
+                connectToNewUser(userId, stream)
             });
 
             peer.on("call", (call) => {
@@ -38,6 +39,9 @@ $(document).ready(function () {
                     addVideoStream(video, userVideoStream);
                 });
             });
+        })
+        .then(() => {
+            console.log("server", "ready")
             socket.emit("ready");
         })
 
