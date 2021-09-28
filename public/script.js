@@ -28,8 +28,7 @@ navigator.mediaDevices
     })
     .then(() => {
         socket.on("user-connected", (userId) => {
-            console.log("client", "ready")
-            connectToNewUser(userId, stream)
+            connectToNewUser(userId, myStream)
         });
 
         peer.on("call", (call) => {
