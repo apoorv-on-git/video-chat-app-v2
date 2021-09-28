@@ -26,6 +26,10 @@ $(document).ready(function () {
         .then((stream) => {
             myStream = stream;
             addVideoStream(myVideo, stream);
+        })
+        .then(() => {
+            console.log("server", "ready")
+            socket.emit("ready");
 
             socket.on("user-connected", (userId) => {
                 console.log("client", "ready")
@@ -33,16 +37,12 @@ $(document).ready(function () {
             });
 
             peer.on("call", (call) => {
-                call.answer(stream);
+                call.answer(myStream);
                 const video = document.createElement("video");
                 call.on("stream", (userVideoStream) => {
                     addVideoStream(video, userVideoStream);
                 });
             });
-        })
-        .then(() => {
-            console.log("server", "ready")
-            socket.emit("ready");
         })
 
     function connectToNewUser(userId, stream) {
