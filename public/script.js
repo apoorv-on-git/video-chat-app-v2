@@ -27,6 +27,10 @@ $(document).ready(function () {
             myStream = stream;
             addVideoStream(myVideo, stream);
 
+            socket.on("user-connected", (userId) => {
+                connectToNewUser(userId, myStream);
+            });
+
             peer.on("call", (call) => {
                 call.answer(stream);
                 const video = document.createElement("video");
@@ -51,10 +55,6 @@ $(document).ready(function () {
             $("#video_grid").append(video)
         });
     };
-
-    socket.on("user-connected", (userId) => {
-        connectToNewUser(userId, myStream);
-    });
 
 })
 
