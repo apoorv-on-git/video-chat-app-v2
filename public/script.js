@@ -2,16 +2,6 @@ const socket = io("/");
 
 const user = prompt("Enter your name");
 
-var peer = new Peer(undefined, {
-    path: "/peerjs",
-    host: "/",
-    port: "443",
-});
-
-peer.on("open", (id) => {
-    socket.emit("join-room", ROOM_ID, id, user);
-});
-
 const myVideo = document.createElement("video");
 myVideo.muted = true;
 
@@ -23,6 +13,16 @@ navigator.mediaDevices
         video: true,
     })
     .then((stream) => {
+        var peer = new Peer(undefined, {
+            path: "/peerjs",
+            host: "/",
+            port: "443",
+        });
+
+        peer.on("open", (id) => {
+            socket.emit("join-room", ROOM_ID, id, user);
+        });
+
         myStream = stream;
         addVideoStream(myVideo, stream);
     })
@@ -38,15 +38,15 @@ navigator.mediaDevices
         socket.on("user-connected", (userId) => {
             connectToNewUser(userId, myStream)
         });
-    })
 
-function connectToNewUser(userId, stream) {
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-        addVideoStream(video, userVideoStream);
-    });
-};
+        function connectToNewUser(userId, stream) {
+            const call = peer.call(userId, stream);
+            const video = document.createElement("video");
+            call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream);
+            });
+        };
+    })
 
 function addVideoStream(video, stream) {
     video.srcObject = stream;
