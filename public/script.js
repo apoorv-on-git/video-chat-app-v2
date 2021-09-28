@@ -21,7 +21,7 @@ navigator.mediaDevices
             config: {
                 "iceServers": [
                     { url: 'stun:stun.l.google.com:19302' },
-                    // { url: 'turn:turn.anyfirewall.com:443?transport=tcp', credential: 'muazkh', username:'web...@live.com' },
+                    { url: 'turn:numb.viagenie.ca:3478', credential: 'E96!g55pdXX66Qn', username: 'ayush.goyal194@gmail.com' },
                 ]
             }
         });
