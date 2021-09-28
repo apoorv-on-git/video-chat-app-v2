@@ -17,6 +17,13 @@ navigator.mediaDevices
             path: "/peerjs",
             host: "/",
             port: "443",
+            debug: true,
+            config: {
+                "iceServers": [
+                    { url: 'stun:stun.l.google.com:19302' },
+                    { url: 'turn:turn.anyfirewall.com:443?transport=tcp' }
+                ]
+            }
         });
 
         peer.on("open", (id) => {
