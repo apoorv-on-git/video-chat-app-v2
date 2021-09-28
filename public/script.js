@@ -132,7 +132,7 @@ $(function () {
 })
 
 socket.on("user-connected", (userId) => {
-    connectToNewUser(userId, stream);
+    connectToNewUser(userId, myStream);
 });
 
 socket.on("createMessage", (message, userName) => {
