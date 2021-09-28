@@ -8,15 +8,15 @@ var peer = new Peer(undefined, {
 
 const user = prompt("Enter your name");
 
+const myVideo = document.createElement("video");
+myVideo.muted = true;
+
+let myStream;
+
 $(document).ready(function () {
     peer.on("open", (id) => {
         socket.emit("join-room", ROOM_ID, id, user);
     });
-
-    const myVideo = document.createElement("video");
-    myVideo.muted = true;
-
-    let myStream;
 
     navigator.mediaDevices
         .getUserMedia({
