@@ -2,66 +2,63 @@ const socket = io("/");
 
 const user = prompt("Enter your name");
 
-$(document).ready(function () {
-    var peer = new Peer(undefined, {
-        path: "/peerjs",
-        host: "/",
-        port: "443",
+var peer = new Peer(undefined, {
+    path: "/peerjs",
+    host: "/",
+    port: "443",
+});
+
+peer.on("open", (id) => {
+    socket.emit("join-room", ROOM_ID, id, user);
+});
+
+const myVideo = document.createElement("video");
+myVideo.muted = true;
+
+let myStream;
+
+navigator.mediaDevices
+    .getUserMedia({
+        audio: true,
+        video: true,
+    })
+    .then((stream) => {
+        myStream = stream;
+        addVideoStream(myVideo, stream);
+    })
+    .then(() => {
+        console.log("server", "ready")
+        socket.emit("ready");
+    })
+
+socket.on("user-connected", (userId) => {
+    console.log("client", "ready")
+    connectToNewUser(userId, stream)
+});
+
+peer.on("call", (call) => {
+    call.answer(myStream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
     });
+});
 
-    peer.on("open", (id) => {
-        socket.emit("join-room", ROOM_ID, id, user);
+function connectToNewUser(userId, stream) {
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
     });
+};
 
-    const myVideo = document.createElement("video");
-    myVideo.muted = true;
-
-    let myStream;
-
-    navigator.mediaDevices
-        .getUserMedia({
-            audio: true,
-            video: true,
-        })
-        .then((stream) => {
-            myStream = stream;
-            addVideoStream(myVideo, stream);
-        })
-        .then(() => {
-            console.log("server", "ready")
-            socket.emit("ready");
-
-            socket.on("user-connected", (userId) => {
-                console.log("client", "ready")
-                connectToNewUser(userId, stream)
-            });
-
-            peer.on("call", (call) => {
-                call.answer(myStream);
-                const video = document.createElement("video");
-                call.on("stream", (userVideoStream) => {
-                    addVideoStream(video, userVideoStream);
-                });
-            });
-        })
-
-    function connectToNewUser(userId, stream) {
-        const call = peer.call(userId, stream);
-        const video = document.createElement("video");
-        call.on("stream", (userVideoStream) => {
-            addVideoStream(video, userVideoStream);
-        });
-    };
-
-    function addVideoStream(video, stream) {
-        video.srcObject = stream;
-        video.addEventListener("loadedmetadata", () => {
-            video.play();
-            $("#video_grid").append(video)
-        });
-    };
-
-})
+function addVideoStream(video, stream) {
+    video.srcObject = stream;
+    video.addEventListener("loadedmetadata", () => {
+        video.play();
+        $("#video_grid").append(video)
+    });
+};
 
 $(function () {
     $("#show_chat").click(function () {
