@@ -21,13 +21,7 @@ navigator.mediaDevices
             config: {
                 "iceServers": [
                     { url: 'stun:stun.l.google.com:19302' },
-                    {
-                        "urls": [
-                            "turn:13.250.13.83:3478?transport=udp"
-                        ],
-                        "username": "YzYNCouZM1mhqhmseWk6",
-                        "credential": "YzYNCouZM1mhqhmseWk6"
-                    }
+                    { "urls": ["turn:13.233.78.148:3478?transport=tcp"], "username": "pro", "credential": "curriculum" }
                 ]
             }
         });
