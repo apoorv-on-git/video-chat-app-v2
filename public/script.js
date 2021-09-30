@@ -15,7 +15,7 @@ var peer = new Peer(undefined, {
     config: {
         "iceServers": [
             { url: 'stun:stun.l.google.com:19302' },
-            // { url: "turn:13.233.78.148:3478?transport=tcp", "username": "pro", "credential": "curriculum" }
+            { url: "turn:13.233.78.148:3478?transport=tcp", "username": "pro", "credential": "curriculum" }
         ]
     }
 });
